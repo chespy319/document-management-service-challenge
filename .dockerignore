@@ -1,0 +1,82 @@
+# -------------------------------
+# 🧠 IDE and Editor Configs
+# -------------------------------
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+*.jfm
+*.dbmdl
+*.ctxt
+.mtj.tmp
+
+# -------------------------------
+# 🛠️ Build Artifacts
+# -------------------------------
+target/
+build/
+dist/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+*.hprof
+dependency-reduced-pom.xml
+release.properties
+replay_pid*
+hs_err_pid*
+
+# -------------------------------
+# 🧪 Maven & Gradle
+# -------------------------------
+.mvn/timing.properties
+.gradle/
+.gradle-app.setting
+.nb-gradle/
+.nbbuild/
+nbdist/
+nbproject/private/
+pom.xml.next
+pom.xml.releaseBackup
+pom.xml.tag
+pom.xml.versionsBackup
+buildNumber.properties
+
+# -------------------------------
+# 🔐 Secrets and Environment
+# -------------------------------
+.env
+secrets.dev.yaml
+values.dev.yaml
+
+# -------------------------------
+# 🧾 Documentation and Licenses
+# -------------------------------
+README.md
+LICENSE
+
+# -------------------------------
+# 🧹 OS and Tooling Artifacts
+# -------------------------------
+.DS_Store
+.factorypath
+.settings/
+.toolstarget/
+.apt_generated/
+.springBeans/
+
+# -------------------------------
+# 🧭 Version Control
+# -------------------------------
+.git/
+.gitignore
+
+# -------------------------------
+# 🧩 Miscellaneous
+# -------------------------------
+charts/
+vendor/
+docker-compose*
+compose.y*ml

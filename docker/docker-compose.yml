@@ -1,7 +1,8 @@
 services:
   postgresql:
     container_name: postgresql_container
-    image: bitnami/postgresql:15.4.0
+    image: bitnami/postgresql:latest
+    restart: unless-stopped
     ports:
       - "5432:5432"
     networks:
@@ -10,23 +11,35 @@ services:
       - challenge_postgresql_data:/bitnami/postgresql
       - ./init-scripts:/docker-entrypoint-initdb.d
     environment:
-      - POSTGRESQL_USERNAME={CHANGE_ME}
-      - POSTGRESQL_PASSWORD={CHANGE_ME}
+      - POSTGRESQL_USERNAME=api
+      - POSTGRESQL_PASSWORD=password
       - POSTGRESQL_DATABASE=challenge
-      - POSTGRESQL_POSTGRES_PASSWORD={CHANGE_ME} # Password of user "postgres"
+      - POSTGRESQL_POSTGRES_PASSWORD=postgres # Password of user "postgres"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U api -d challenge -h localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   minio:
     image: minio/minio:latest
     container_name: minio
-    restart: always
+    restart: unless-stopped
+    networks:
+      - batch_network
     ports:
       - "9000:9000"  # API S3
       - "9001:9001"  # MinIO Web Console
     environment:
-      MINIO_ROOT_USER: {CHANGE_ME}
-      MINIO_ROOT_PASSWORD: {CHANGE_ME}
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: password
     command: server --console-address ":9001" /data
     volumes:
       - challenge_minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   # Include all the necessary settings to include a document management service in the stack
   # Remember to configure this service to limit the memory to 50MB
   # document-management-service:
@@ -36,6 +49,27 @@ services:
   #      resources:
   #        limits:
   #          memory: 50M
+  document-management-service:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - batch_network
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    environment:
+      - db_host=host.docker.internal # for internal docker network
+      - minio_host=host.docker.internal # for internal docker network
+      - SPRING_PROFILES_ACTIVE=dev
+    deploy:
+      resources:
+        limits:
+          memory: 50M
 
 volumes:
   challenge_postgresql_data:
