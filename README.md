@@ -167,4 +167,80 @@ Even if you are unable to complete the challenge 100%, please explain why you co
 ### **Note: Your approach, problem-solving skills, and reasoning are just as important as the final implementation.**
 
 ---
+Project Setup & Execution Guide
 
+---
+
+1. PREREQUISITES
+
+* Java 17 (or later)
+* Maven 3.8+
+* Docker & Docker Compose
+* Git
+
+---
+
+2. CLONE THE REPOSITORY
+
+Start by cloning the project repository and navigating into the directory:
+
+git clone https://github.com/chespy319/document-management-service-challenge.git
+cd document-management-service-challenge
+
+---
+
+3. BUILD THE PROJECT
+
+Compile the source code and package the application using Maven:
+
+mvn clean install
+
+
+---
+
+4. START INFRASTRUCTURE WITH DOCKER COMPOSE
+
+The project uses docker-compose.yml to set up necessary services like MinIO (S3-compatible object storage) and the database.
+
+Start the required infrastructure in detached mode:
+
+docker-compose up -d
+
+Infrastructure Details:
+* MinIO (Object Storage):
+    * API Endpoint: http://localhost:9000
+    * Console/UI: http://localhost:9001
+* Database: Configured in the application.properties file.
+
+Default Credentials (MinIO):
+* Access Key: admin
+* Secret Key: password
+* Default Bucket: Configured in application.properties (e.g., document-bucket)
+
+---
+
+5. EXECUTE DATABASE SCHEMA (Optional/Context)
+
+The schema initialization script (schema-init.sql) must be run to create the necessary tables and indexes.
+
+Note: For the development environment, no additional configuration is typically needed. All database and service settings are pre-configured in application-dev.properties.
+
+---
+
+6. RUN THE APPLICATION
+
+Start the Spring Boot service:
+
+mvn spring-boot:run
+
+The API will be accessible at: http://localhost:8080
+
+---
+
+7. USEFUL ENDPOINTS
+
+Once the application is running, use these primary endpoints to interact with the service:
+
+* Upload Document: POST /documents
+* Search Documents: GET /documents/search
+* Download Document: GET /documents/{id}/download
